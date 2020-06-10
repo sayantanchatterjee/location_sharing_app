@@ -1,0 +1,69 @@
+<script src="javascripts/jquery.js"></script>
+<script src="javascripts/bootstrap.js"></script>
+<script src="javascripts/ol.js"></script>
+<script src="stylesheets/ol.css"></script>
+
+<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+<div class="container-fluid h-100">
+	<br>
+	<div class="w-100 d-inline-block" style="height: 75%;">
+		<div id='js-map' class='map'></div>
+	</div>
+</div>
+
+<script> 
+	var map;
+	var view;
+	var lng = <%= @longitude %>;
+	var lat = <%= @latitude %>;
+	view = new ol.View({
+			center: ol.proj.fromLonLat([lng,lat]),
+			zoom: 16,
+			maxZoom: 20
+		});
+		
+		map = new ol.Map({
+			layers: [
+			  new ol.layer.Tile({
+				source: new ol.source.OSM()
+			  })
+			],
+			target: 'js-map',
+			controls: ol.control.defaults({
+			  attributionOptions: {
+				collapsible: false
+			  }
+			}),
+			view: view
+		});
+		
+		addLocationPoint(ol.proj.fromLonLat([lng,lat]),"coordinatePosition",'red');
+		
+		function addLocationPoint(coords,layerName,pointerColor){
+			
+			var iconFeature = new ol.Feature({
+								geometry: new ol.geom.Point(coords)
+							});
+			var iconStyle = new ol.style.Style({
+								image: new ol.style.Icon({
+									anchor: [0.5, 0.5],
+									anchorXUnits: 'fraction',
+									anchorYUnits: 'fraction',
+									src: 'https://www.google.co.in/maps/vt/icon/name=assets/icons/spotlight/spotlight_pin_v3_shadow-1-small.png,assets/icons/spotlight/spotlight_pin_v3-1-small.png,assets/icons/spotlight/spotlight_pin_v3_dot-1-small.png&highlight=ff000000,ea4335,a50e0e?scale=1',
+									crossOrigin: 'anonymous',
+								})
+						  });
+			iconFeature.setStyle(iconStyle);
+			var layer = new ol.layer.Vector({
+				source: new ol.source.Vector({
+					features: [
+						iconFeature
+					]
+				})
+			});
+			layer.set('name', layerName)
+			map.addLayer(layer);
+		}
+</script>  

@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LocationSharingApp</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+  </head>
+  
+
+  <body>
+    <%= yield %>
+    </br>
+    </br>
+    <div>
+      </br>
+      <h6> Publicly Shared Locations by: <b> <%= @username %> </b> </h6>
+      <div>
+        <table class="table table-light table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th> Shared By </th>
+              <th> Latitude </th>
+              <th> Longitude </th>
+              <th> Show on map</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if @publicly_shared_locations.present? %>
+              <% @publicly_shared_locations.each do |location| %>
+                <tr>
+                <td><%= location["username"] %></td>
+                <td><%= location["latitude"] %></td>
+                <td><%= location["longitude"] %></td>
+                <td><%= location["show_on_map"].html_safe %></td>                
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="4"> No Publicly Shared Location Available </td>              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+
+<div class="modal fade" id="showLocationModal" tabindex="-1" role="dialog" aria-labelledby="showLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="showLocationModalTitle">Show Location</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    function show_location(lng,lat){
+      var iframe=" <iframe src='show_location?longitude="+lng+"&latitude="+lat+"' class='w-100 h-100'></iframe> "
+      $("#showLocationModal .modal-body").html(iframe);
+      $(showLocationModal).modal(); 
+    } 
+</script>

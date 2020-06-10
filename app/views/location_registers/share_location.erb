@@ -1,0 +1,230 @@
+<script src="javascripts/jquery.js"></script>
+<script src="javascripts/bootstrap.js"></script>
+<script src="javascripts/ol.js"></script>
+<script src="stylesheets/ol.css"></script>
+
+<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+
+<style>
+	.ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 370px;
+    }
+    .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+    }
+    .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+    }
+    .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+    }
+    .ol-popup-closer:after {
+        content: "✖";
+    }
+	.w-40 {
+	  width: 40%;
+	}
+</style>
+
+<div class="container-fluid h-100">
+	<br>
+	<div class="w-100 d-inline-block" style="height: 75%;">
+		<div id='js-map' class='map'></div>
+		<div id="popup" class="ol-popup">
+			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+			<div id="popup-content"></div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	var map;
+	var view;
+	var container = document.getElementById('popup');
+	var content = document.getElementById('popup-content');
+	var closer = document.getElementById('popup-closer');
+	var overlay = new ol.Overlay({
+        element: container,
+        autoPan: true,
+        autoPanAnimation: {
+          duration: 250
+        }
+    });
+	
+	closer.onclick = function() {
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    };
+	
+	$( document ).ready(function() {
+		find_current_location();
+	});
+	
+	function find_current_location(){
+		
+		if (navigator.geolocation) {
+			var options = {
+			enableHighAccuracy: false,
+			timeout: 1000,
+			maximumAge: 1
+			};
+
+			function success(pos) {
+				var crd = pos.coords;
+				var lat = crd.latitude;
+				var lng = crd.longitude;
+				alert(lat+"----"+lng)
+				init_map([lng,lat]);
+			}
+
+			function error(err) {
+				init_map([0,0]);
+				alert("error"+ err.toString())
+				console.warn(`ERROR(${err.code}): ${err.message}`);
+			}
+
+			navigator.geolocation.getCurrentPosition(success, error, options);
+			
+		} else {
+			alert('Geo Location feature is not supported in this browser.');
+		}
+	}
+	function init_map(coordinate){
+		view = new ol.View({
+			center: ol.proj.fromLonLat(coordinate),
+			zoom: 8,
+			maxZoom: 20
+		});
+		
+		map = new ol.Map({
+			layers: [
+			  new ol.layer.Tile({
+				source: new ol.source.OSM()
+			  })
+			],
+			target: 'js-map',
+			controls: ol.control.defaults({
+			  attributionOptions: {
+				collapsible: false
+			  }
+			}),
+			overlays: [overlay],
+			view: view
+		});
+		
+		addLocationPoint(ol.proj.fromLonLat(coordinate),"myCurrentPosition",'red');
+		
+		map.on('singleclick', function(e) {
+			removeLocationPoint('MarkerPointLayer');
+			var coords = map.getCoordinateFromPixel(e.pixel);
+			var zoomLevel=view.getZoom();
+			addLocationPoint(coords,'MarkerPointLayer','blue');
+			var hdms = ol.coordinate.toStringHDMS(coords);
+			var coordinate=ol.proj.transform(coords, "EPSG:3857", "EPSG:4326");
+			customHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
+			customHTML += '<button type="button" class="btn btn-primary" style="margin-left: 50px;" onclick="saveLocation('+coordinate+');">Save</button>'
+			content.innerHTML=customHTML;
+			overlay.setPosition(coords);
+		})
+	}
+	
+	function addLocationPoint(coords,layerName,pointerColor){
+		var iconFeature = new ol.Feature({
+			geometry: new ol.geom.Point(coords)
+		});
+		var iconStyle = new ol.style.Style({
+								image: new ol.style.Icon({
+									anchor: [0.5, 0.5],
+									anchorXUnits: 'fraction',
+									anchorYUnits: 'fraction',
+									src: 'https://www.google.co.in/maps/vt/icon/name=assets/icons/spotlight/spotlight_pin_v3_shadow-1-small.png,assets/icons/spotlight/spotlight_pin_v3-1-small.png,assets/icons/spotlight/spotlight_pin_v3_dot-1-small.png&highlight=ff000000,ea4335,a50e0e?scale=1',
+									crossOrigin: 'anonymous',
+								})
+						  });
+		iconFeature.setStyle(iconStyle);
+		
+		var layer = new ol.layer.Vector({
+			source: new ol.source.Vector({
+				features: [
+					iconFeature
+				]
+			})
+		});
+		layer.set('name', layerName)
+		map.addLayer(layer);
+	}
+	
+	function removeLocationPoint(layerName){
+		try {
+			map.getLayers().forEach(function (layer) {
+				if (layer.get('name') != undefined && layer.get('name') === layerName) {
+					map.removeLayer(layer);
+				}
+			});
+		}catch(err) {
+			
+		};
+	}	
+		
+	function saveLocation(lng, lat){
+		
+		$('#modal_submit').attr("disabled","disabled");
+		$('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span>  Share")
+		var longitude=lng;
+		var latitude=lat;
+		
+		data_srt="latitude="+latitude+"&longitude="+longitude
+		alert(data_srt)
+		 $.ajax({
+			type: "POST",
+			url: '/save_new_location',
+			data: data_srt,
+			headers: {
+				'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+			},
+			success: function(msg){            
+				$('#saveLocationModal').modal('hide');
+				alert(msg);
+				$('#modal_submit').removeAttr("disabled");
+				$('#modal_submit').html("Share")
+			},complete: function (xhr, status) {
+				if(xhr.status==401){
+					alert(xhr.responseText)
+					window.location.reload();
+				}
+			}
+		});
+		  
+	}
+</script>

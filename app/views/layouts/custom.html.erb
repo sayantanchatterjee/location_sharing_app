@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/bootstrap.js"></script>
+    
+    
+      <title>LocationSharingApp</title>
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+
+      <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+      <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+      
+      <div class="row h-10  float-right">
+        <div class="col-sm-4 float-right text-center">
+          <input class="btn btn-danger" type="button" value="Logout" onclick="window.location.href = '/logout'" style="margin-top:10px;"/>
+        </div>
+      </div>
+      
+  </head>
+  
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

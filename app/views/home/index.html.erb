@@ -1,0 +1,248 @@
+<link rel="stylesheet" href="stylesheets/select2.css" />
+<script src="javascripts/select2.js"></script>
+<link rel="stylesheet" href="stylesheets/custom.css" />
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>LocationSharingApp</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>  
+
+
+    <div class="row h-10  float-right mr-1">
+      <div class="col-sm-4 float-right text-center">
+        <input class="btn btn-cust" type="button" value="Other Users" onclick="window.location.href = '/users_list'" style="margin-top:10px;"/>
+      </div>
+    </div> 
+    <div class="row h-10  float-right mr-2">
+      <div class="col-sm-4 float-right text-center">
+        <input class="btn btn-info" type="button" value="Share New Location" onclick="share_new_location()" style="margin-top:10px;" >
+      </div>
+    </div> 
+  </head>
+
+  <style>
+      html, body {
+          height: 100%;
+      }
+
+      .container {
+          height: 100%;
+      }
+      .modal-full {
+          min-width: 90%;
+          margin-left: 80;
+      }
+
+      .modal-full .modal-content {
+          min-height: 90vh;
+      }
+
+  </style>
+  
+
+  <body>
+    <%= yield %>
+    
+    </br>
+    <title>LOCATION SHARING APPLICATION</title>
+    <h4>Welcome: <b> <%= @username %> </b></h4>
+    </br>
+    </br>
+    <div> 
+    
+      <h4> <b> My Shared Locations: </b> </h4>
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-light table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th> Shared By </th>
+              <th> Latitude </th>
+              <th> Longitude </th>
+              <th>Show on map</th>
+              <th>Share</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if @location_registers_shared_by_self.present? %>
+              <% @location_registers_shared_by_self.each do |location_register| %>
+                <tr>
+                  <td><%= location_register["username"] %></td>
+                  <td><%= location_register["latitude"] %></td>
+                  <td><%= location_register["longitude"] %></td>
+                  <td><%= location_register["show_on_map"].html_safe %></td>
+                  <td><%= location_register["share_location"].html_safe %></td>
+                  <td><%= location_register["destroy_location"].html_safe %></td>
+                </tr>
+              <% end %>
+            <% else %>
+                <tr>
+                  <td colspan="6"> No Shared Locations Available </td>                
+                </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      </br>
+      <h4> <b>Locations Shared With Me: </b> </h4>
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-light table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th> Shared By </th>
+              <th> Latitude </th>
+              <th> Longitude </th>
+              <th> Show on map</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if @location_registers_shared_by_other.present? %>
+              <% @location_registers_shared_by_other.each do |location_register_other| %>
+                <tr>
+                  <td><%= location_register_other["username"] %></td>
+                  <td><%= location_register_other["latitude"] %></td>
+                  <td><%= location_register_other["longitude"] %></td>
+                  <td><%= location_register_other["show_on_map"].html_safe %></td>                
+                </tr>
+              <% end %>
+            <% else %>
+                <tr>
+                  <td colspan="4"> No Shared Locations Available </td>                
+                </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+
+<div class="modal fade" id="showLocationModal" tabindex="-1" role="dialog" aria-labelledby="showLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-full" role="document">
+    <div class="modal-content modal-full">
+      <div class="modal-header">
+        <h6 class="modal-title" id="showLocationModalTitle">Map View</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="shareLocationModal" tabindex="-1" role="dialog" aria-labelledby="shareLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="showLocationModalTitle">Choose users to share</h6>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-cust" onclick="share_location();" id="modal_submit" >Share</button>
+    </div>  
+    </div>
+  </div>
+</div>
+
+<script>
+    var users_to_share = <%= raw @users_to_share.to_json %>
+    function openLocationShareModal(location_id){
+      var html = "";
+      html += "<input type='hidden' id='location_id' name='location_id' value='"+location_id+"'/>"
+      html += "<div class='w-100 float-left'>";
+      html += "</div>";
+      html += "<p class='w-40 float-left' > NOTE: Clear all selections and click share to share location publicly </p>";
+      html += "<div class='w-100 float-left ' id='selectUserDiv' >";
+      html += "<p class='w-40 float-left' > Select User(s): </p>";
+      html += "<select class='custom-select' id='filtering' style='width:300px;' >";
+      $.each(users_to_share, function( index, value ) {
+        html +="<option value="+value.id+">"+value.email+"</option>";
+      });
+      html += "</select>";
+      html += "</div>";
+      
+      $("#shareLocationModal .modal-body").html(html);
+      $("#filtering").select2( {
+        placeholder: "Select User...",
+        allowClear: true,
+        multiple: true
+      } );
+      $("#shareLocationModal").modal();
+    }	
+
+    function share_location(){
+      $('#modal_submit').attr("disabled","disabled");
+      $('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span>  Share")
+      var location_id=$("#location_id").val();
+      user_id_arr=$("#filtering").val();
+      data_srt="location_id="+location_id+"&user_id_arr="+user_id_arr
+      $.ajax({
+        type: "POST",
+        url: '/update_location_share',
+        data: data_srt,
+        headers: {
+          'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+        success: function(msg){            
+          $('#shareLocationModal').modal('hide');
+          alert(msg);
+          $('#modal_submit').removeAttr("disabled");
+          $('#modal_submit').html("Share")
+        },complete: function (xhr, status) {
+          if(xhr.status==401){
+            alert(xhr.responseText)
+            window.location.reload();
+          }
+        }
+      });
+
+      return;
+    }
+    function show_location(lng,lat){
+      var iframe=" <iframe src='show_location?longitude="+lng+"&latitude="+lat+"' class='w-100 h-100'></iframe> "
+      $("#showLocationModal .modal-body").html(iframe);
+      $(showLocationModal).modal(); 
+    } 
+
+    function share_new_location(){
+      var iframe=" <iframe src='share_location' class='w-100 h-100'></iframe> "
+      $("#showLocationModal .modal-body").html(iframe);
+      $(showLocationModal).modal(); 
+    } 
+    function deleteLocationData(location_id){
+      var r = confirm("Are you sure want to delete this location?");
+      if (r == true) {
+        data_srt="location_id="+location_id
+        $.ajax({
+          type: "POST",
+          url: '/destroy_location',
+          data: data_srt,
+          headers: {
+            'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+          },
+          success: function(msg){            
+            alert(msg);
+          },complete: function (xhr, status) {
+            if(xhr.status==401){
+              alert(xhr.responseText)
+              window.location.reload();
+            }
+          }
+        });
+      } else {
+        console.log("Deletion cancelled")
+      }
+      
+    }
+    
+</script>
