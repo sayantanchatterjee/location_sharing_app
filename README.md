@@ -101,6 +101,7 @@ https://devcenter.heroku.com/articles/getting-started-with-ruby
 
 ### Load sample data from seed file
 To load sample data from from seed file:
+* Seed files are available under app_root/db/fixtures/
 ```
 # Need to run first to reset all existing data in the database
 # otherwise data mappings will not be matched
