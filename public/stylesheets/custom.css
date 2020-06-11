@@ -6,3 +6,19 @@
   .table-wrapper-scroll-y {
   display: block;
   }
+
+  html, body {
+      height: 100%;
+  }
+
+  .container {
+      height: 100%;
+  }
+  .modal-full {
+      min-width: 90%;
+      margin-left: 80;
+  }
+
+  .modal-full .modal-content {
+      min-height: 90vh;
+  }

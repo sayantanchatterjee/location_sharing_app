@@ -22,24 +22,7 @@
     </div> 
   </head>
 
-  <style>
-      html, body {
-          height: 100%;
-      }
-
-      .container {
-          height: 100%;
-      }
-      .modal-full {
-          min-width: 90%;
-          margin-left: 80;
-      }
-
-      .modal-full .modal-content {
-          min-height: 90vh;
-      }
-
-  </style>
+ 
   
 
   <body>
@@ -232,6 +215,7 @@
           },
           success: function(msg){            
             alert(msg);
+            window.location.reload()
           },complete: function (xhr, status) {
             if(xhr.status==401){
               alert(xhr.responseText)

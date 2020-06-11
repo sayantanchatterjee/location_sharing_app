@@ -1,10 +1,7 @@
 <script src="javascripts/jquery.js"></script>
 <script src="javascripts/bootstrap.js"></script>
 <script src="javascripts/ol.js"></script>
-<script src="stylesheets/ol.css"></script>
-
-<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+<link href="stylesheets/ol.css" type="text/css" rel="stylesheet" />
 
 
 <style>
@@ -95,7 +92,7 @@
 		
 		if (navigator.geolocation) {
 			var options = {
-			enableHighAccuracy: false,
+			enableHighAccuracy: true,
 			timeout: 1000,
 			maximumAge: 1
 			};
@@ -104,13 +101,12 @@
 				var crd = pos.coords;
 				var lat = crd.latitude;
 				var lng = crd.longitude;
-				alert(lat+"----"+lng)
 				init_map([lng,lat]);
 			}
 
 			function error(err) {
-				init_map([0,0]);
-				alert("error"+ err.toString())
+				// Load map with default position
+				init_map([88.3627138688202,22.5827570785926]);
 				console.warn(`ERROR(${err.code}): ${err.message}`);
 			}
 
@@ -123,7 +119,7 @@
 	function init_map(coordinate){
 		view = new ol.View({
 			center: ol.proj.fromLonLat(coordinate),
-			zoom: 8,
+			zoom: 10,
 			maxZoom: 20
 		});
 		
@@ -193,6 +189,7 @@
 				}
 			});
 		}catch(err) {
+			alert("ERR BLOCK")
 			
 		};
 	}	
@@ -205,7 +202,6 @@
 		var latitude=lat;
 		
 		data_srt="latitude="+latitude+"&longitude="+longitude
-		alert(data_srt)
 		 $.ajax({
 			type: "POST",
 			url: '/save_new_location',
@@ -214,14 +210,16 @@
 				'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
 			},
 			success: function(msg){            
-				$('#saveLocationModal').modal('hide');
+				$('#showLocationModal').modal('hide');
 				alert(msg);
 				$('#modal_submit').removeAttr("disabled");
 				$('#modal_submit').html("Share")
+				removeLocationPoint('MarkerPointLayer');
+				window.parent.location.reload()
 			},complete: function (xhr, status) {
 				if(xhr.status==401){
 					alert(xhr.responseText)
-					window.location.reload();
+					window.location.reload(); 
 				}
 			}
 		});

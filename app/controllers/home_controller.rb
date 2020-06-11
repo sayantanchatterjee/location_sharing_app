@@ -3,7 +3,7 @@ class HomeController < ApplicationController
   def index
     @username = current_user.username
     @user_id = current_user.id
-    @users_to_share = User.where("id <> #{current_user.id}") #rescue []
+    @users_to_share = User.where("id <> #{current_user.id}") rescue []
     @location_registers_shared_by_self, @location_registers_shared_by_other = LocationRegister.fetch_shared_locations_by_user(@user_id)
   end
 

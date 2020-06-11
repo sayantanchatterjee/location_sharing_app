@@ -1,10 +1,8 @@
 <script src="javascripts/jquery.js"></script>
 <script src="javascripts/bootstrap.js"></script>
 <script src="javascripts/ol.js"></script>
-<script src="stylesheets/ol.css"></script>
-
-<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+<script src="javascripts/ol.js"></script>
+<link href="stylesheets/ol.css" type="text/css" rel="stylesheet" />
 
 <div class="container-fluid h-100">
 	<br>
@@ -20,7 +18,7 @@
 	var lat = <%= @latitude %>;
 	view = new ol.View({
 			center: ol.proj.fromLonLat([lng,lat]),
-			zoom: 16,
+			zoom: 10,
 			maxZoom: 20
 		});
 		
