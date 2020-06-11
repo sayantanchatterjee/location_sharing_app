@@ -93,7 +93,7 @@
 		if (navigator.geolocation) {
 			var options = {
 			enableHighAccuracy: true,
-			timeout: 1000,
+			timeout: 5000,
 			maximumAge: 1
 			};
 
@@ -105,8 +105,9 @@
 			}
 
 			function error(err) {
-				// Load map with default position
-				init_map([88.3627138688202,22.5827570785926]);
+				// Load map with default position from config through helper
+				var default_coords = <%= LocationRegistersHelper.get_default_coordinates() %>
+				init_map(default_coords);
 				console.warn(`ERROR(${err.code}): ${err.message}`);
 			}
 
@@ -189,7 +190,7 @@
 				}
 			});
 		}catch(err) {
-			alert("ERR BLOCK")
+			console.log("removeLocationPoint catch block")
 			
 		};
 	}	

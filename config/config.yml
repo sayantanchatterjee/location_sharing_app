@@ -1,0 +1,15 @@
+
+default: &default
+  # Keeping default coordinate using which map will load by default if 
+  # Current location is not available from google api 
+  default_coordinates:
+    - 88.3627138688202
+    - 22.5827570785926
+
+development:
+  <<: *default
+  
+test:
+  <<: *default
+production:
+  <<: *default
