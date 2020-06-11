@@ -1,0 +1,17 @@
+LocationRegister.seed(:id,
+  {latitude: 22.5827570785926, longitude: 88.3627138688202, user_id: 1},
+  {latitude: 18.7232376728758, longitude: 73.1197940764716, user_id: 1},
+  {latitude: -1.39787155599466, longitude: 5.6689453125, user_id: 1},
+  {latitude: -1.42481421594248, longitude: 5.63358306884766, user_id: 1},
+  {latitude: 13.8807458420256, longitude: -12.919921875, user_id: 1},
+  {latitude: 17.3506383760488, longitude: 78.57421875, user_id: 1},
+  {latitude: 22.6555220166074, longitude: 88.4447479248047, user_id: 2},
+  {latitude: 22.7780808031245, longitude: 88.4488677978516, user_id: 2},
+  {latitude: 22.7983383368724, longitude: 88.6438751220703, user_id: 1},
+  {latitude: 22.8932553680213, longitude: 88.3149719238281, user_id: 1},
+  {latitude: 22.7578202614139, longitude: 88.538818359375, user_id: 1},
+  {latitude: 22.6849841428721, longitude: 88.450927734375, user_id: 3},
+  {latitude: 27.0982539061379, longitude: 80.8154296875, user_id: 3},
+  {latitude: 22.8938879258155, longitude: 88.011474609375, user_id: 2},
+  {latitude: 19.0910081814769, longitude: 73.0921709726198, user_id: 2}
+)

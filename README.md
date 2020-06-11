@@ -99,16 +99,28 @@ rails server
 https://devcenter.heroku.com/articles/getting-started-with-ruby
 '''
 
+### Load sample data from seed file
+To load sample data from from seed file:
+```
+# Need to run first to reset all existing data in the database
+# otherwise data mappings will not be matched
+rails db:reset
 
+# Now load seed data to db
+rails db:seed_fu
+
+```
 
 * ...
 =======
 
 
-### Reference
+### References
 * https://gorails.com/setup/ubuntu/14.04
 
 * https://gist.github.com/alistairewj/8aaea0261fe4015333ddf8bed5fe91f8
+
+* https://www.rubydoc.info/gems/seed-fu/2.3.9
 
 (NOTE: best view in Mozilla Firefox browser)
 

@@ -56,3 +56,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'rake'
 
 gem 'devise'
+
+gem 'seed-fu'
+
+gem 'seed_dump'

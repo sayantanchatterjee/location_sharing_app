@@ -76,22 +76,10 @@ class SharedLocationMapping < ApplicationRecord
                 insert_mapping_data(location_id, user_id)
             end
         else # Calling for publicly shared location
-            # Check any entries needs to be delete or not
-            if existing_shared_user_ids.length > 1
-                # Then no need to check user id whether it is 0 on not as for each location id only one
-                # record will be there for user id with 0... direct call for delete
-                delete_location_wise_mapping_data(location_id)
-                # Now call for entry with zero user id for public share
-                insert_mapping_data(location_id, 0)
-            else
-                # Check whether single id is zero or not if zero then skip deletion or insert
-                # Otherwise insert after deleting the record
-                if !existing_shared_user_ids.include?(0)
-                    delete_location_wise_mapping_data(location_id)
-                    # Now call for entry with zero user id for public share
-                    insert_mapping_data(location_id, 0)
-                end
-            end
+            #Delete Existing mapping data
+            delete_location_wise_mapping_data(location_id)
+            # Now call for entry with zero user id for public share
+            insert_mapping_data(location_id, 0)
         end
 
         Rails.logger.info "Ending #{self}::#{__method__.to_s}"
