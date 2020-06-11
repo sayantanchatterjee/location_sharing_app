@@ -36,7 +36,7 @@
 			view: view
 		});
 		
-		addLocationPoint(ol.proj.fromLonLat([lng,lat]),"coordinatePosition",'red');
+		addLocationPoint(ol.proj.fromLonLat([lng,lat]),"coordinatePosition",[255,99,71]);
 		
 		function addLocationPoint(coords,layerName,pointerColor){
 			
@@ -45,6 +45,7 @@
 							});
 			var iconStyle = new ol.style.Style({
 								image: new ol.style.Icon({
+									color: pointerColor,
 									anchor: [0.5, 0.5],
 									anchorXUnits: 'fraction',
 									anchorYUnits: 'fraction',

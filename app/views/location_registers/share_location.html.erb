@@ -140,13 +140,13 @@
 			view: view
 		});
 		
-		addLocationPoint(ol.proj.fromLonLat(coordinate),"myCurrentPosition",'red');
+		addLocationPoint(ol.proj.fromLonLat(coordinate),"myCurrentPosition",[255,99,71]);
 		
 		map.on('singleclick', function(e) {
 			removeLocationPoint('MarkerPointLayer');
 			var coords = map.getCoordinateFromPixel(e.pixel);
 			var zoomLevel=view.getZoom();
-			addLocationPoint(coords,'MarkerPointLayer','blue');
+			addLocationPoint(coords,'MarkerPointLayer',[0,255,0]);
 			var hdms = ol.coordinate.toStringHDMS(coords);
 			var coordinate=ol.proj.transform(coords, "EPSG:3857", "EPSG:4326");
 			customHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
@@ -162,6 +162,7 @@
 		});
 		var iconStyle = new ol.style.Style({
 								image: new ol.style.Icon({
+									color: pointerColor,
 									anchor: [0.5, 0.5],
 									anchorXUnits: 'fraction',
 									anchorYUnits: 'fraction',
