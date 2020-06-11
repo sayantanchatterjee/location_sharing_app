@@ -2,9 +2,6 @@
 # Location Sharing Application
  An application by where an user can create an user account and after login using that account can share multiple locations from map. And also able to share that location either publicly or with other users. A registered user can also view shared public places by other users. User can able to manage there shared places, and view shared places by other users with her/him in the home page.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -96,7 +93,8 @@ rails server
 * A free Heroku account.
 * Ruby 2.3.5 installed locally
 * Bundler installed locally - run gem install bundler.
-reference:
+
+* Reference:
 '''
 https://devcenter.heroku.com/articles/getting-started-with-ruby
 '''
