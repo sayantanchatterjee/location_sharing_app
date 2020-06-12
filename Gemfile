@@ -60,3 +60,7 @@ gem 'devise'
 gem 'seed-fu'
 
 gem 'seed_dump'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 4.0.0'
+end
