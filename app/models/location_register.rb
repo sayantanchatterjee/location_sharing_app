@@ -59,6 +59,14 @@ class LocationRegister < ApplicationRecord
                 inner_hash["show_on_map"] = "<input class='btn-cust' type='button' value='Show' onclick='show_location("+row.longitude.to_s+","+row.latitude.to_s+")' >"
                 inner_hash["share_location"] = "<input class='btn-cust' type='button' value='Share' onclick='openLocationShareModal("+row.id.to_s+")' >"
                 inner_hash["destroy_location"] = "<input class='btn-danger' type='button' value='Delete' onclick='deleteLocationData("+row.id.to_s+")' >"
+                # Check shared with users or public
+                user_ids = SharedLocationMapping.fetch_existing_mapping_data_with_location_id_wise(row.id).pluck(:shared_user_id) rescue []
+                if user_ids.present? && user_ids.length == 1 && user_ids.include?(0)
+                    inner_hash["shared_with"] = "Shared-Publicly"
+                else
+                    user_emails = User.where("id IN (#{user_ids.join(',')})").pluck(:email) rescue []
+                    inner_hash["shared_with"] = "Shared-"+user_emails.join(',')
+                end
                 
                 response_hash_obj << inner_hash
             end

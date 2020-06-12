@@ -52,7 +52,7 @@
           <tbody>
             <% if @location_registers_shared_by_self.present? %>
               <% @location_registers_shared_by_self.each do |location_register| %>
-                <tr>
+                <tr class="tooltip-test" title=<%= location_register["shared_with"] %>>
                   <td><%= location_register["username"] %></td>
                   <td><%= location_register["latitude"] %></td>
                   <td><%= location_register["longitude"] %></td>
@@ -181,6 +181,7 @@
           alert(msg);
           $('#modal_submit').removeAttr("disabled");
           $('#modal_submit').html("Share")
+          window.location.reload()
         },complete: function (xhr, status) {
           if(xhr.status==401){
             alert(xhr.responseText)
