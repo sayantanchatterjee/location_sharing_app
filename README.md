@@ -26,7 +26,6 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt-get update
 sudo apt-get install git-core zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
 ```
-
 Now install Ruby using ruby version manager (rvm):
 
 ```
@@ -121,8 +120,6 @@ rails db:seed_fu
 * https://gorails.com/setup/ubuntu/14.04
 
 * https://gist.github.com/alistairewj/8aaea0261fe4015333ddf8bed5fe91f8
-
-* Test Commit
 
 * https://www.rubydoc.info/gems/seed-fu/2.3.9
 
